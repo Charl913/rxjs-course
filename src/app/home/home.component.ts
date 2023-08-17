@@ -25,17 +25,13 @@ export class HomeComponent implements OnInit {
 
         const courses$: Observable<Course[]> = http$
             .pipe(
-                catchError(err => {
-                    console.log('Error occured', err);
 
-                    return throwError(err);
-                }),
-                finalize(() => {
-                    console.log('Finilize executed...');
-                }),
                 tap(() => console.log('HTTP request executed')),
                 map(res => Object.values(res['payload'])),
-                shareReplay()
+                shareReplay(),
+                retryWhen(error => error.pipe(
+                    delayWhen(() => timer(2000))
+                ))
             );
 
         this.beginnerCourses$ = courses$
