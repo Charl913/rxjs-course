@@ -50,7 +50,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
         setRxJsLoggingLevel(RxJsLoggingLevel.TRACE);
 
-        const lessons$ = this.loadLessons();
+        // const lessons$ = this.loadLessons();
 
         // forkJoin(course$, lessons$)
         //     .pipe(
@@ -64,7 +64,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
 
-        fromEvent<any>(this.input.nativeElement, 'keyup')
+        this.lessons$ = fromEvent<any>(this.input.nativeElement, 'keyup')
             .pipe(
                 map(event => event.target.value),
                 startWith(''),
@@ -73,8 +73,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
                 distinctUntilChanged(),
                 switchMap(search => this.loadLessons(search)),
                 debug(RxJsLoggingLevel.DEBUG, 'lessons value')
-            )
-            .subscribe(console.log)
+            );
     }
 
     loadLessons(search = ''): Observable<Lesson[]> {
